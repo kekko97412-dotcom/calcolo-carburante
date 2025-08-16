@@ -1,0 +1,37 @@
+name: Android CI (Flutter Debug APK)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**.dart'
+      - 'pubspec.yaml'
+      - 'android/**'
+      - '.github/workflows/android.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Build Debug APK
+        run: flutter build apk --debug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CalcoloCarburante-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
